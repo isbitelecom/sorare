@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional
 
 import aiohttp
 
-from config import SORARE_GRAPHQL_URL, SORARE_EMAIL, SORARE_PASSWORD
+from config import SORARE_GRAPHQL_URL, SORARE_EMAIL, SORARE_PASSWORD, SORARE_JWT
 from api.auth import get_jwt_token
 
 
@@ -28,19 +28,28 @@ class SorareClient:
     async def _connect(self):
         """Ouvre la session HTTP et s'authentifie si nécessaire."""
         if not self.jwt_token:
-            if not SORARE_EMAIL or not SORARE_PASSWORD:
+            if SORARE_JWT:
+                self.jwt_token = SORARE_JWT
+            elif SORARE_EMAIL and SORARE_PASSWORD:
+                self.jwt_token = await get_jwt_token(SORARE_EMAIL, SORARE_PASSWORD)
+            else:
                 raise ValueError(
                     "Identifiants manquants. Créez un fichier .env avec "
-                    "SORARE_EMAIL et SORARE_PASSWORD (voir .env.example)"
+                    "SORARE_JWT ou SORARE_EMAIL + SORARE_PASSWORD (voir .env.example)"
                 )
-            self.jwt_token = await get_jwt_token(SORARE_EMAIL, SORARE_PASSWORD)
 
         self._session = aiohttp.ClientSession(
             headers={
                 "Authorization": f"Bearer {self.jwt_token}",
                 "Content-Type": "application/json",
                 "Accept": "application/json",
-                "User-Agent": "SorareCardAnalyzer/1.0",
+                "Origin": "https://sorare.com",
+                "Referer": "https://sorare.com/",
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/120.0.0.0 Safari/537.36"
+                ),
             }
         )
 

@@ -34,7 +34,7 @@ from analysis.buy_analyzer import (
     BuyCriteria,
     find_buy_opportunities,
 )
-from config import SORARE_EMAIL, SORARE_PASSWORD, MAX_AGE_BUY, MIN_SCORE_BUY, MAX_PRICE_ETH
+from config import SORARE_EMAIL, SORARE_PASSWORD, SORARE_JWT, MAX_AGE_BUY, MIN_SCORE_BUY, MAX_PRICE_ETH
 
 console = Console()
 
@@ -55,11 +55,11 @@ def _header():
 
 
 def _check_credentials():
-    if not SORARE_EMAIL or not SORARE_PASSWORD:
+    if not SORARE_JWT and not (SORARE_EMAIL and SORARE_PASSWORD):
         console.print(
             "[red]Erreur:[/red] Identifiants manquants.\n"
             "Créez un fichier [bold].env[/bold] à partir de [bold].env.example[/bold] "
-            "et renseignez SORARE_EMAIL et SORARE_PASSWORD."
+            "et renseignez SORARE_JWT ou SORARE_EMAIL + SORARE_PASSWORD."
         )
         sys.exit(1)
 

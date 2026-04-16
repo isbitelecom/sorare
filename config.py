@@ -8,6 +8,7 @@ SORARE_AUTH_URL = "https://api.sorare.com/api/v1/users/sign_in"
 
 SORARE_EMAIL = os.getenv("SORARE_EMAIL", "")
 SORARE_PASSWORD = os.getenv("SORARE_PASSWORD", "")
+SORARE_JWT = os.getenv("SORARE_JWT", "")
 
 # Critères d'achat
 MAX_AGE_BUY = int(os.getenv("MAX_AGE_BUY", "20"))
